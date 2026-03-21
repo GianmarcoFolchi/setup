@@ -135,24 +135,8 @@ install_packages() {
   local tmpfile
   tmpfile="$(mktemp)"
 
-  cat > "$tmpfile" <<'BREWFILE'
-brew "git"
-brew "curl"
-brew "wget"
-brew "neovim"
-brew "tmux"
-brew "zsh"
-brew "fzf"
-brew "ripgrep"
-brew "fd"
-brew "bat"
-brew "zoxide"
-brew "yazi"
-brew "htop"
-brew "trash-cli"
-brew "lazygit"
-brew "tree-sitter"
-BREWFILE
+  log "Fetching Brewfile from setup repo..."
+  curl -fsSL "${SETUP_REPO_URL}/Brewfile" -o "$tmpfile"
 
   brew bundle --file="$tmpfile"
   rm -f "$tmpfile"
