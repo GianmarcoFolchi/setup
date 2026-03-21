@@ -7,7 +7,7 @@ Cross-platform dev environment bootstrap for macOS and Linux. Installs Neovim, T
 ### 1. Install prerequisites
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/bootstrap.sh | bash
 ```
 
 ### 2. Authenticate with GitHub
@@ -19,8 +19,8 @@ gh auth login
 ### 3. Install tools and configure
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/main/install.sh | bash && \
-curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/main/configure.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/install.sh | bash && \
+curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/configure.sh | bash
 ```
 
 ## What Each Script Does
@@ -36,8 +36,8 @@ All scripts are idempotent — safe to re-run.
 ## Re-running
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/main/install.sh | bash
-curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/main/configure.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/configure.sh | bash
 ```
 
 ## Configuration

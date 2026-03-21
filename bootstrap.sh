@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SETUP_REPO_URL="https://raw.githubusercontent.com/GianmarcoFolchi/setup/main"
+SETUP_REPO_URL="https://raw.githubusercontent.com/GianmarcoFolchi/setup/master"
 
 log()  { printf '→ %s\n' "$*"; }
 warn() { printf '⚠ %s\n' "$*" >&2; }

@@ -4,7 +4,7 @@ set -euo pipefail
 DOTFILES_REPO_URL="${DOTFILES_REPO_URL:-git@github.com-personal:GianmarcoFolchi/dotfiles.git}"
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
-SETUP_REPO_URL="https://raw.githubusercontent.com/GianmarcoFolchi/setup/main"
+SETUP_REPO_URL="https://raw.githubusercontent.com/GianmarcoFolchi/setup/master"
 
 log()  { printf '→ %s\n' "$*"; }
 warn() { printf '⚠ %s\n' "$*" >&2; }
