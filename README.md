@@ -44,7 +44,9 @@ curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/config
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DOTFILES_REPO_URL` | `git@github.com-personal:GianmarcoFolchi/dotfiles.git` | Bare repo URL |
+| `DOTFILES_REPO_URL` | auto-detected via `gh auth` | Override to skip auto-detection |
 | `DOTFILES_DIR` | `$HOME/dotfiles` | Where to clone the bare repo |
 | `DOTFILES_BRANCH` | `master` | Branch to checkout |
 | `NONINTERACTIVE` | unset | Set to `1` to skip all prompts |
+
+The dotfiles clone URL is auto-detected from your `gh auth` session. It always clones via HTTPS using the `gh` credential helper. After checkout, if your `.ssh/config` contains a GitHub host alias (e.g. `github.com-personal`), the remote is automatically switched to use it for subsequent SSH operations.

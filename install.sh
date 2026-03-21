@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOTFILES_REPO_URL="${DOTFILES_REPO_URL:-git@github.com-personal:GianmarcoFolchi/dotfiles.git}"
+DOTFILES_HTTPS_URL="https://github.com/GianmarcoFolchi/dotfiles.git"
+DOTFILES_REPO_URL="${DOTFILES_REPO_URL:-}"
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
 SETUP_REPO_URL="https://raw.githubusercontent.com/GianmarcoFolchi/setup/master"
@@ -16,11 +17,46 @@ dotgit() {
   git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
+resolve_clone_url() {
+  if [[ -n "$DOTFILES_REPO_URL" ]]; then
+    log "Using explicit DOTFILES_REPO_URL: $DOTFILES_REPO_URL"
+    return
+  fi
+
+  if have gh && gh auth status &>/dev/null; then
+    gh auth setup-git 2>/dev/null
+    DOTFILES_REPO_URL="$DOTFILES_HTTPS_URL"
+    log "Cloning via HTTPS (gh credential helper)"
+  else
+    die "gh is not authenticated. Run 'gh auth login' first, or set DOTFILES_REPO_URL manually."
+  fi
+}
+
+update_remote_for_ssh() {
+  if [[ ! -f "$HOME/.ssh/config" ]]; then
+    return
+  fi
+
+  local alias
+  alias="$(grep -E '^Host\s+github\.com' "$HOME/.ssh/config" \
+    | awk '{print $2}' \
+    | grep -v '^github\.com$' \
+    | head -1)" || true
+
+  if [[ -n "$alias" ]]; then
+    local ssh_url="git@${alias}:GianmarcoFolchi/dotfiles.git"
+    dotgit remote set-url origin "$ssh_url"
+    log "Switched remote to SSH alias: $ssh_url"
+  fi
+}
+
 clone_dotfiles() {
   if [[ -d "$DOTFILES_DIR" ]]; then
     log "Bare repo already exists at $DOTFILES_DIR — skipping clone"
     return
   fi
+
+  resolve_clone_url
 
   log "Cloning bare repo..."
   git clone --bare "$DOTFILES_REPO_URL" "$DOTFILES_DIR"
@@ -32,6 +68,7 @@ clone_dotfiles() {
   log "Checking out $DOTFILES_BRANCH..."
   if dotgit checkout "$DOTFILES_BRANCH" 2>/dev/null; then
     log "Checkout complete"
+    update_remote_for_ssh
     return
   fi
 
@@ -51,6 +88,7 @@ clone_dotfiles() {
 
   dotgit checkout "$DOTFILES_BRANCH"
   log "Checkout complete (conflicts backed up to $backup)"
+  update_remote_for_ssh
 }
 
 setup_brew_path() {
