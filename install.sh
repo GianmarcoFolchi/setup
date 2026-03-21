@@ -25,6 +25,9 @@ clone_dotfiles() {
   log "Cloning bare repo..."
   git clone --bare "$DOTFILES_REPO_URL" "$DOTFILES_DIR"
   dotgit config --local status.showUntrackedFiles no
+  dotgit config --local user.email "gmfolc@gmail.com"
+  dotgit config --local user.name "Gianmarco Folchi"
+  dotgit config --local push.autoSetupRemote true
 
   log "Checking out $DOTFILES_BRANCH..."
   if dotgit checkout "$DOTFILES_BRANCH" 2>/dev/null; then
