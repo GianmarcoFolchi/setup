@@ -86,7 +86,6 @@ install_packages() {
 
   local tmpfile
   tmpfile="$(mktemp)"
-  trap 'rm -f "$tmpfile"' RETURN
 
   cat > "$tmpfile" <<'BREWFILE'
 brew "git"
@@ -108,6 +107,7 @@ brew "tree-sitter"
 BREWFILE
 
   brew bundle --file="$tmpfile"
+  rm -f "$tmpfile"
   log "Packages installed"
 }
 
