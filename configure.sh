@@ -9,6 +9,16 @@ die()  { printf '✗ %s\n' "$*" >&2; exit 1; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+setup_brew_path() {
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+}
+
 maybe_sudo() {
   if [[ "$(id -u)" -eq 0 ]]; then
     "$@"
@@ -121,6 +131,7 @@ print_summary() {
 }
 
 main() {
+  setup_brew_path
   verify_prerequisites
   install_omz_plugins
   set_default_shell
