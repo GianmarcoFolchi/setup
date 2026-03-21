@@ -9,6 +9,14 @@ die()  { printf '✗ %s\n' "$*" >&2; exit 1; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+maybe_sudo() {
+  if [[ "$(id -u)" -eq 0 ]]; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
 verify_prerequisites() {
   local ok=true
 
@@ -70,7 +78,7 @@ set_default_shell() {
   if [[ "$(uname -s)" == "Linux" ]]; then
     if ! grep -qxF "$zsh_path" /etc/shells 2>/dev/null; then
       log "Adding $zsh_path to /etc/shells..."
-      echo "$zsh_path" | sudo tee -a /etc/shells > /dev/null
+      echo "$zsh_path" | maybe_sudo tee -a /etc/shells > /dev/null
     fi
   fi
 

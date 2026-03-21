@@ -9,6 +9,14 @@ die()  { printf '✗ %s\n' "$*" >&2; exit 1; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+maybe_sudo() {
+  if [[ "$(id -u)" -eq 0 ]]; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
 detect_pkg_family() {
   case "$(uname -s)" in
     Darwin) echo "brew"; return ;;
@@ -44,21 +52,21 @@ install_linux_prerequisites() {
 
   case "$family" in
     apt)
-      sudo apt-get update -y
-      sudo apt-get install -y git curl build-essential
+      maybe_sudo apt-get update -y
+      maybe_sudo apt-get install -y git curl build-essential
       ;;
     dnf)
-      sudo dnf install -y git curl gcc gcc-c++ make
+      maybe_sudo dnf install -y git curl gcc gcc-c++ make
       ;;
     pacman)
-      sudo pacman -Sy --needed --noconfirm git curl base-devel
+      maybe_sudo pacman -Sy --needed --noconfirm git curl base-devel
       ;;
     apk)
-      sudo apk add --no-cache git curl build-base
+      maybe_sudo apk add --no-cache git curl build-base
       ;;
     zypper)
-      sudo zypper refresh
-      sudo zypper install -y git curl gcc gcc-c++ make
+      maybe_sudo zypper refresh
+      maybe_sudo zypper install -y git curl gcc gcc-c++ make
       ;;
     *)
       die "Unknown Linux distro. Install git, curl, and a C compiler manually, then re-run."
@@ -80,28 +88,29 @@ install_gh_cli() {
 
   case "$family" in
     apt)
-      sudo mkdir -p -m 755 /etc/apt/keyrings
+      maybe_sudo mkdir -p -m 755 /etc/apt/keyrings
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-        | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
-      sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+        | maybe_sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+      maybe_sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-        | sudo tee /etc/apt/sources.list.d/github-cli-stable.list > /dev/null
-      sudo apt-get update -y
-      sudo apt-get install -y gh
+        | maybe_sudo tee /etc/apt/sources.list.d/github-cli-stable.list > /dev/null
+      maybe_sudo apt-get update -y
+      maybe_sudo apt-get install -y gh
       ;;
     dnf)
-      sudo dnf install -y 'dnf-command(config-manager)'
-      sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
-      sudo dnf install -y gh
+      maybe_sudo rpm --import https://keyserver.ubuntu.com/pks/lookup?op=get\&search=0x23F3D4EA75716059
+      curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo \
+        | maybe_sudo tee /etc/yum.repos.d/gh-cli.repo > /dev/null
+      maybe_sudo dnf install -y gh
       ;;
     pacman)
-      sudo pacman -S --needed --noconfirm github-cli
+      maybe_sudo pacman -S --needed --noconfirm github-cli
       ;;
     apk)
-      sudo apk add --no-cache github-cli
+      maybe_sudo apk add --no-cache github-cli
       ;;
     zypper)
-      sudo zypper install -y gh
+      maybe_sudo zypper install -y gh
       ;;
     *)
       warn "Could not install gh automatically. Install it manually: https://cli.github.com/"
