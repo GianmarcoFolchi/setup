@@ -6,7 +6,13 @@ Cross-platform dev environment bootstrap for macOS and Linux. Installs Neovim, T
 
 ### 0. Install curl (if needed)
 
-macOS has curl pre-installed. Most Linux distros do too, but minimal installs (e.g. Docker containers, cloud VMs) may not. If `curl` is missing:
+macOS has curl pre-installed. Most Linux distros do too, but minimal installs (e.g. Docker containers, cloud VMs) may not. If `curl` is missing, first check your distro:
+
+```bash
+cat /etc/os-release | grep ^ID=
+```
+
+Then install curl:
 
 ```bash
 # Debian/Ubuntu
