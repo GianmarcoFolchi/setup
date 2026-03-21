@@ -123,10 +123,13 @@ sync_nvim_plugins() {
 }
 
 print_summary() {
+  local zsh_path
+  zsh_path="$(which zsh 2>/dev/null || echo "zsh")"
+
   echo ""
   log "Configuration complete."
   echo ""
-  echo "  Open a new terminal or run: exec zsh"
+  echo "  Open a new terminal or run: exec $zsh_path -l"
   echo ""
 }
 
