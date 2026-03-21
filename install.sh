@@ -37,16 +37,23 @@ update_remote_for_ssh() {
     return
   fi
 
-  local alias
-  alias="$(grep -E '^Host\s+github\.com' "$HOME/.ssh/config" \
+  local host
+  host="$(grep -E '^Host\s+github\.com' "$HOME/.ssh/config" \
     | awk '{print $2}' \
     | grep -v '^github\.com$' \
     | head -1)" || true
 
-  if [[ -n "$alias" ]]; then
-    local ssh_url="git@${alias}:GianmarcoFolchi/dotfiles.git"
+  if [[ -z "$host" ]]; then
+    return
+  fi
+
+  if ssh -T -o BatchMode=yes -o ConnectTimeout=5 "git@${host}" 2>&1 | grep -qi "successfully authenticated"; then
+    local ssh_url="git@${host}:GianmarcoFolchi/dotfiles.git"
     dotgit remote set-url origin "$ssh_url"
     log "Switched remote to SSH alias: $ssh_url"
+  else
+    warn "SSH alias '${host}' found in ~/.ssh/config but connection failed — keeping HTTPS remote"
+    warn "To switch later, copy your SSH keys and run: git --git-dir=$DOTFILES_DIR remote set-url origin git@${host}:GianmarcoFolchi/dotfiles.git"
   fi
 }
 

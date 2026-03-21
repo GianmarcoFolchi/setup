@@ -49,4 +49,27 @@ curl -fsSL https://raw.githubusercontent.com/GianmarcoFolchi/setup/master/config
 | `DOTFILES_BRANCH` | `master` | Branch to checkout |
 | `NONINTERACTIVE` | unset | Set to `1` to skip all prompts |
 
-The dotfiles clone URL is auto-detected from your `gh auth` session. It always clones via HTTPS using the `gh` credential helper. After checkout, if your `.ssh/config` contains a GitHub host alias (e.g. `github.com-personal`), the remote is automatically switched to use it for subsequent SSH operations.
+The dotfiles clone URL is auto-detected from your `gh auth` session. It always clones via HTTPS using the `gh` credential helper. After checkout, if your `.ssh/config` contains a GitHub host alias (e.g. `github.com-personal`) and SSH connectivity works, the remote is automatically switched to SSH.
+
+## SSH Keys (Optional)
+
+If you use SSH to push to GitHub (e.g. on a work laptop with multiple GitHub accounts), copy your SSH keys to the new machine **before** running `install.sh`:
+
+```bash
+# From your existing machine — copy keys to the new one
+scp ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub user@new-machine:~/.ssh/
+
+# On the new machine — set correct permissions
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+```
+
+The install script will:
+1. Clone dotfiles via HTTPS (always works after `gh auth login`)
+2. Check out your `.ssh/config` from dotfiles
+3. Test if the SSH alias in `.ssh/config` can connect to GitHub
+4. If SSH works, switch the remote to SSH automatically
+5. If SSH doesn't work, keep HTTPS and print instructions for switching later
+
+If you only use HTTPS (e.g. personal laptop), skip this — everything works without SSH keys.
