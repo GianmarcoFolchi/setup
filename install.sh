@@ -107,7 +107,7 @@ brew "lazygit"
 brew "tree-sitter"
 BREWFILE
 
-  brew bundle --no-lock --file="$tmpfile"
+  brew bundle --file="$tmpfile"
   log "Packages installed"
 }
 
