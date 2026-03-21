@@ -131,6 +131,10 @@ print_summary() {
   echo ""
   echo "  Open a new terminal or run: exec $zsh_path -l"
   echo ""
+  echo "  Note: The first time you open nvim, Mason will auto-install"
+  echo "  LSP servers and formatters. This takes ~2 minutes and requires"
+  echo "  internet access. Subsequent launches are instant."
+  echo ""
 }
 
 main() {
