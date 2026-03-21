@@ -113,6 +113,36 @@ install_tpm_and_plugins() {
   "$tpm_dir/bin/install_plugins" || warn "TPM plugin install had issues — run Prefix + I in tmux to retry"
 }
 
+install_zoekt() {
+  if ! have go; then
+    warn "Go not found — skipping Zoekt install"
+    return
+  fi
+
+  local missing=false
+  for bin in zoekt zoekt-index; do
+    if ! have "$bin"; then
+      missing=true
+      break
+    fi
+  done
+
+  if [[ "$missing" == false ]]; then
+    log "Zoekt binaries already installed"
+    return
+  fi
+
+  log "Installing Zoekt search binaries..."
+  go install github.com/sourcegraph/zoekt/cmd/zoekt@latest
+  go install github.com/sourcegraph/zoekt/cmd/zoekt-index@latest
+
+  if have zoekt && have zoekt-index; then
+    log "Zoekt installed"
+  else
+    warn "Zoekt installed but binaries not on PATH — add ~/go/bin to PATH"
+  fi
+}
+
 sync_nvim_plugins() {
   log "Syncing Neovim plugins via lazy-lock.json..."
   if nvim --headless "+Lazy! restore" +qa 2>/dev/null; then
@@ -143,6 +173,7 @@ main() {
   install_omz_plugins
   set_default_shell
   install_tpm_and_plugins
+  install_zoekt
   sync_nvim_plugins
   print_summary
 }
