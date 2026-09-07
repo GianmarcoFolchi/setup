@@ -135,6 +135,11 @@ print_summary() {
   echo "  LSP servers and formatters. This takes ~2 minutes and requires"
   echo "  internet access. Subsequent launches are instant."
   echo ""
+  echo "  Note: Neovim icons need a Nerd Font. Set your terminal font to"
+  echo "  \"Hack Nerd Font Mono\" and restart the terminal, or icons will"
+  echo "  render as empty boxes."
+  echo "  (iTerm2: Settings -> Profiles -> Text -> Font)"
+  echo ""
 }
 
 main() {
